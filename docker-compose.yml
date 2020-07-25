@@ -1,0 +1,23 @@
+version: '3.3'
+services:
+  game:
+    build: etl
+    ports:
+      - "27960:27960/udp"
+    volumes:
+      - /tmp/etl/et_data:/et_data
+      - /tmp/etl/etmain:/etmain
+      - /tmp/etl/omni-bot:/omni-bot
+    working_dir: /etlegacy
+    environment:
+      WEB_HOST: "http://iris:8081/"
+  webserver:
+    build: webserver
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "8081:80"
+    volumes:
+      - /tmp/etl/et_data:/var/www
+
