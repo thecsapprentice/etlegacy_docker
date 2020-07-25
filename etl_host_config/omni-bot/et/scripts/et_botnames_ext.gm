@@ -1,0 +1,234 @@
+/////////////////////////////////////////////////////////////////////
+// initialize the team tables
+AxisBots = {};
+AlliedBots = {};
+
+/////////////////////////////////////////////////////////////////////
+// USER CONFIG STARTS HERE
+/////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////
+// Register default profiles for the game classes.
+foreach (cls in Util.PlayerClassTable)
+{
+	RegisterDefaultProfile(cls, "def_bot.gm");
+}
+
+/////////////////////////////////////////////////////////////////////
+// optionally assign a prefix for the bot name. set to "" for no prefix
+global BotPrefix = "^o[BOT]^7";
+global AxisBotPrefix = BotPrefix;
+global AlliedBotPrefix = BotPrefix;
+
+/////////////////////////////////////////////////////////////////////
+// Axis Bots
+
+// Covert Ops
+t = { class=CLASS.COVERTOPS, weapon=0, profile="" };
+AxisBots["Meatmentalist"] = t;
+AxisBots["Plastic Grifter"] = t;
+AxisBots["Gluesmith"] = t;
+AxisBots["Potato Warlock"] = t;
+AxisBots["Newt Trampler"] = t;
+AxisBots["Groovemancer"] = t;
+AxisBots["Rhythmmiser"] = t;
+
+// Engineers
+t = { class=CLASS.ENGINEER, weapon=0, profile="" };
+AxisBots["Pan Weilder"] = t;
+AxisBots["Moose Clubber"] = t;
+AxisBots["Funk Bandit"] = t;
+AxisBots["Ox Supervisor"] = t;
+AxisBots["Toad Buster"] = t;
+AxisBots["Eel Smacker"] = t;
+AxisBots["Yam Snatcher"] = t;
+
+// Field Ops
+t = { class=CLASS.FIELDOPS, weapon=0, profile="" };
+AxisBots["Hamster Intimindator"] = t;
+AxisBots["Meat Jouster"] = t;
+AxisBots["Puppy Witch"] = t;
+AxisBots["Disco Weilder"] = t;
+AxisBots["Spaghetti Lord"] = t;
+AxisBots["Lemming Slapper"] = t;
+AxisBots["Beer Seer"] = t;
+
+// Medics
+t = { class=CLASS.MEDIC, weapon=0, profile="" };
+AxisBots["Dough Tosser"] = t;
+AxisBots["Harmonica Gatherer"] = t;
+AxisBots["Pie Driver"] = t;
+AxisBots["Toffee Mentalist"] = t;
+AxisBots["Reindeer Lord"] = t;
+AxisBots["Crayon Pillager"] = t;
+AxisBots["Toad-a-mancer"] = t;
+
+// Soldiers
+t = { class=CLASS.SOLDIER, weapon=0, profile="" };
+AxisBots["Pepper Conjurer"] = t;
+AxisBots["Beef Sorceress"] = t;
+AxisBots["Banjo Master"] = t;
+AxisBots["Walrus Subjugator"] = t;
+AxisBots["Chill Witch"] = t;
+AxisBots["Snark Herder"] = t;
+AxisBots["Kitten Supervisor"] = t;
+
+/////////////////////////////////////////////////////////////////////
+// Allied Bots
+
+// Covert Ops
+t = { class=CLASS.COVERTOPS, weapon=0, profile="" };
+AlliedBots["Artificial Demonologist"] = t;
+AlliedBots["Bomb Warlock"] = t;
+AlliedBots["Necromantic Drifter"] = t;
+AlliedBots["Spell Cyborg"] = t;
+AlliedBots["Spirit Crucifier"] = t;
+AlliedBots["Power Analyst"] = t;
+AlliedBots["Accounting Slaughterer"] = t;
+
+// Engineers
+t = { class=CLASS.ENGINEER, weapon=0, profile="" };
+AlliedBots["Interplanetary Heretic"] = t;
+AlliedBots["Infernal Biologist"] = t;
+AlliedBots["Magnetic Showgirl"] = t;
+AlliedBots["Grenade Explorer"] = t;
+AlliedBots["Black Hole Executioner"] = t;
+AlliedBots["Malice Hacker"] = t;
+AlliedBots["Dungeon Policeman"] = t;
+
+// Field Ops
+t = { class=CLASS.FIELDOPS, weapon=0, profile="" };
+AlliedBots["Torpedo Prophet"] = t;
+AlliedBots["Agony Paratrooper"] = t;
+AlliedBots["Shotgun Mutant"] = t;
+AlliedBots["Astral Linguist"] = t;
+AlliedBots["Artificial Pirate"] = t;
+AlliedBots["Sword Cowboy"] = t;
+AlliedBots["Bullet Rocketeer"] = t;
+
+// Medics
+t = { class=CLASS.MEDIC, weapon=0, profile="" };
+AlliedBots["Chemical Programmer"] = t;
+AlliedBots["Prayer Marshal"] = t;
+AlliedBots["Bio-Engineered Knight"] = t;
+AlliedBots["Cybernetic Clerk"] = t;
+AlliedBots["Nanotechnological Detective"] = t;
+AlliedBots["Psychyatric Bombadier"] = t;
+AlliedBots["Sagebrush Alchemist"] = t;
+
+// Soldiers
+t = { class=CLASS.SOLDIER, weapon=0, profile="" };
+AlliedBots["Steel Blasphemer"] = t;
+AlliedBots["Spirit Stockbroker"] = t;
+AlliedBots["Malice Physicist"] = t;
+AlliedBots["Machine Evoker"] = t;
+AlliedBots["Devil Android"] = t;
+AlliedBots["Plasma Slave"] = t;
+AlliedBots["Mutant Sacrificer"] = t;
+
+/////////////////////////////////////////////////////////////////////
+// Overflow bots - used if no bots left for team / class desired
+global ExtraBots =
+{
+	"Bladehexer",
+	"Enlightened Alchemist",
+	"Hexlocker",
+	"Sigilslayer",
+	"Spiritdancer",
+	"Charmscribe",
+	"Dream Seer",
+	"Illusion Alchemist",
+	"Poison Sorcerer",
+	"Winter Alchemist",
+	"War Seismomedium",
+	"Red Magus",
+	"Hypnowitch",
+	"Spirit Warlock",
+	"Zoomage",
+	"Cryomage",
+	"Forge Healer",
+	"Voidcharmer",
+	"Chant Godslinger",
+	"Shadow Healer"
+};
+
+/////////////////////////////////////////////////////////////////////
+// END USER CONFIG. DO NOT EDIT BELOW
+/////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////
+// initialize some global tables for external reference
+// the previous tables are set up for user friendliness
+global _AxisBots = {};
+global _AlliedBots = {};
+global _PreferredWeapon = {};
+global _OverFlowBotNumber = 0;
+
+/////////////////////////////////////////////////////////////////////
+// register the bot names and set up tables for OnBotAutoJoin reference
+
+InitNames = function ( tbl1, tbl2, prefix)
+{
+	foreach ( botName and loadout in tbl1 ) {
+		name = prefix + botName;
+		Names[ name ] = loadout.profile;
+		if (!tbl2[ loadout.class ]) {
+			tbl2[ loadout.class ] = {};
+		}
+		// add the name to the list
+		Util.AddToTable(tbl2[ loadout.class ], name);
+
+		if (loadout.weapon) {
+			_PreferredWeapon[ name ] = loadout.weapon;
+		}
+	}
+};
+
+InitNames(AxisBots, _AxisBots, AxisBotPrefix);
+InitNames(AlliedBots, _AlliedBots, AlliedBotPrefix);
+
+/////////////////////////////////////////////////////////////////////
+// pick a bot to add based on team / class needed
+global OnBotAutoJoin = function()
+{
+	desiredTeam = TEAM.AXIS;
+	if ( tableCount(Server.Team)>0 && (Server.Team[TEAM.AXIS].NumPlayers > Server.Team[TEAM.ALLIES].NumPlayers
+		|| Server.Team[TEAM.AXIS].NumPlayers == Server.Team[TEAM.ALLIES].NumPlayers && Server.Team[TEAM.AXIS].NumBots > Server.Team[TEAM.ALLIES].NumBots)
+		|| GetModName() == "infected") {
+		desiredTeam = TEAM.ALLIES;
+	}
+
+	desiredClass = ClassManager.EvalClassByTeam(desiredTeam);
+
+	teamTable = _AxisBots;
+	if ( desiredTeam == TEAM.ALLIES ) {
+		teamTable = _AlliedBots;
+	}
+
+	// find a bot for the team and class. sequential lookup for now.
+	// cs: note: gm tables are actually randomized, so bots will vary
+	// from game to game.
+	botName = null;
+	if ( teamTable[ desiredClass ] ) {
+		foreach ( name in teamTable[ desiredClass ] ) {
+			// make sure this name is not already used
+			if ( !Util.GetBotByName(name) ) {
+				botName = name;
+				break;
+			}
+		}
+	}
+
+	if ( !botName && _OverFlowBotNumber < tableCount(ExtraBots) ) {
+		botName = ExtraBots[_OverFlowBotNumber];
+		global _OverFlowBotNumber = _OverFlowBotNumber + 1;
+
+		if ( desiredTeam == TEAM.ALLIES ) {
+			botName = AlliedBotPrefix + botName;
+		} else {
+			botName = AxisBotPrefix + botName;
+		}
+	}
+
+	return { class = desiredClass, team = desiredTeam, name = botName };
+};
